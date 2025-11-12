@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Penghitung Kadar Etanol</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🔬 Aplikasi Penghitung Kadar Etanol pada Bensin</h1>
+    
+    <div id="mode-select">
+      <p>Pilih Mode:</p>
+      <button onclick="showLabMode()">Mode Laboratorium</button>
+      <button onclick="showPublicMode()">Mode Masyarakat Umum</button>
+    </div>
+
+    <!-- Mode 1: Laboratorium -->
+    <div id="lab-mode" class="hidden">
+      <h2>Mode Laboratorium</h2>
+      <label>Nama Sampel: </label>
+      <input type="text" id="sampleName" placeholder="contoh: Pertalite"><br>
+
+      <label>Masukkan hasil uji kadar etanol (pisahkan dengan koma):</label>
+      <input type="text" id="ethanolValues" placeholder="misal: 8.5, 9.2, 10.1"><br>
+      <button onclick="calculateLab()">Hitung Rata-rata</button>
+
+      <div id="labResult" class="result"></div>
+    </div>
+
+    <!-- Mode 2: Masyarakat Umum -->
+    <div id="public-mode" class="hidden">
+      <h2>Mode Estimasi Masyarakat</h2>
+      <p>Jawab pertanyaan berikut (Ya/Tidak)</p>
+
+      <div id="questions"></div>
+
+      <button id="submitPublic" onclick="calculatePublic()">Hitung Estimasi</button>
+      <div id="publicResult" class="result"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

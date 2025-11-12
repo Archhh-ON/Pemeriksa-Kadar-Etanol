@@ -1,0 +1,91 @@
+// Daftar pertanyaan untuk Mode Masyarakat
+const pertanyaan = [
+  "Setelah uji air, apakah lapisan bawah (air+etanol) bertambah?",
+  "Apakah warna bensin terlihat lebih pucat atau agak keruh?",
+  "Apakah mesin sulit dihidupkan saat pagi hari?",
+  "Apakah mesin terasa lebih bergetar atau knocking saat jalan?",
+  "Apakah tenaga mesin menurun atau tarikan terasa berat?",
+  "Apakah konsumsi bensin terasa lebih boros dari biasanya?",
+  "Apakah jarak tempuh kendaraan jadi lebih pendek?",
+  "Apakah dari knalpot tercium bau alkohol menyengat?",
+  "Apakah asap knalpot terlihat lebih putih dari biasanya?",
+  "Apakah ada bagian karet atau selang bensin yang cepat retak?"
+];
+
+// Tampilkan pertanyaan Mode Masyarakat
+window.onload = function() {
+  const qDiv = document.getElementById('questions');
+  pertanyaan.forEach((q, i) => {
+    qDiv.innerHTML += `
+      <div class="question">
+        <label>${i+1}. ${q}</label><br>
+        <select id="q${i}">
+          <option value="n">Tidak</option>
+          <option value="y">Ya</option>
+        </select><br><br>
+      </div>
+    `;
+  });
+};
+
+function showLabMode() {
+  document.getElementById('lab-mode').classList.remove('hidden');
+  document.getElementById('public-mode').classList.add('hidden');
+}
+
+function showPublicMode() {
+  document.getElementById('public-mode').classList.remove('hidden');
+  document.getElementById('lab-mode').classList.add('hidden');
+}
+
+// MODE 1: Laboratorium
+function calculateLab() {
+  const values = document.getElementById('ethanolValues').value.split(',').map(v => parseFloat(v.trim()));
+  if (values.length === 0 || values.some(isNaN)) {
+    alert('Masukkan angka kadar etanol dengan benar!');
+    return;
+  }
+
+  const total = values.reduce((a, b) => a + b, 0);
+  const rata = total / values.length;
+
+  let resultText = `<p>Rata-rata kadar etanol: <b>${rata.toFixed(2)}%</b></p>`;
+  if (rata > 10) resultText += `<p class="warning">⚠️ PERINGATAN: Kadar etanol terlalu tinggi! Bisa merusak mesin.</p>`;
+  else resultText += `<p class="safe">✅ Aman untuk kendaraan.</p>`;
+
+  document.getElementById('labResult').innerHTML = resultText;
+}
+
+// MODE 2: Estimasi Masyarakat
+function calculatePublic() {
+  let skor = 0;
+
+  for (let i = 0; i < pertanyaan.length; i++) {
+    const ans = document.getElementById(`q${i}`).value;
+    if (ans === 'y') {
+      if (i === 0) skor += 5;
+      else if ([1, 3, 7, 9].includes(i)) skor += 3;
+      else if ([2, 4, 5, 6].includes(i)) skor += 2;
+      else skor += 3;
+    }
+  }
+
+  let perkiraan = 0;
+  if (skor <= 5) perkiraan = 5;
+  else if (skor <= 10) perkiraan = 8;
+  else if (skor <= 15) perkiraan = 10;
+  else if (skor <= 20) perkiraan = 12;
+  else perkiraan = 15;
+
+  let result = `
+    <p>Skor total indikasi: <b>${skor}</b></p>
+    <p>Perkiraan kadar etanol: <b>${perkiraan}%</b></p>
+  `;
+
+  if (perkiraan > 10)
+    result += `<p class="warning">⚠️ PERINGATAN: Kadar etanol kemungkinan tinggi! Bisa merusak mesin.</p>`;
+  else
+    result += `<p class="safe">✅ Kemungkinan kadar etanol masih aman.</p>`;
+
+  document.getElementById('publicResult').innerHTML = result;
+}
